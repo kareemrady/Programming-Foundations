@@ -44,7 +44,7 @@ def start_calculator
       num2 = get_num_input('Please type in a 2nd number Ex: 1, 2, 3.5')
     end
     result = num1.send(operation, num2)
-    format("%.2f", result)
+    puts "Result is #{format("%.2f", result)}"
     prompt 'Type "q" or "Q" at to quit or press any other key to continue....'
     quit = gets.chomp
   end
