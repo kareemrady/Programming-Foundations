@@ -4,7 +4,7 @@ def get_number_input(message)
   puts message
   begin
     num = gets.chomp
-    num_regex = %r{/\d/}
+    num_regex = %r{\d}
     raise TypeError.new("Invalid Number #{num} please input a valid number ex 1 , 2, 3.5, ...") if num_regex.match(num).nil?
   rescue TypeError => e
     puts e.message
@@ -17,7 +17,7 @@ def get_operation_input(message)
   puts message
   begin
     operation = gets.chomp
-    op_regex = %r{/[-+*\/%]/}
+    op_regex = %r{[-+*\/%]}
     # raise an error if the regex doesn't match one of the allowed operations or if there is a typo ++ , -+ more than one operator entered
     raise ArgumentError.new("Invalid Entry #{operation} please type + - * / or %") if op_regex.match(operation).nil? || operation.size > 1
   rescue ArgumentError => e
