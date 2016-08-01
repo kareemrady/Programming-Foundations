@@ -1,18 +1,15 @@
 require 'yaml'
 PROMPTS = YAML.load_file('mortgage_prompts.yml')
 
-# Method for Prompts accepts a message
 def prompt(message)
   puts PROMPTS[message]
 end
 
-# Method To find if an input is a valid number that is greater than 0
 def not_a_valid_number?(number)
   num_regex = /^[1-9]+/
   num_regex.match(number).nil?
 end
 
-# Method to Calculate Monthly Intereste Rate
 def calculate_monthly_interest_rate
   prompt('APR')
   apr = gets.chomp
@@ -24,7 +21,6 @@ def calculate_monthly_interest_rate
   (apr.to_f / 12.0) / 100
 end
 
-# Method to Calculate Loan Duration in Months
 def calculate_loan_duration_months
   prompt('loan_duration')
   yearly_duration = gets.chomp
@@ -51,21 +47,16 @@ def calculate_monthly_payment(amount, interest, duration)
   amount * (interest / (1 - (1 + interest)**-duration))
 end
 
-def quit
-  prompt('quit')
-  gets.chomp.capitalize
-end
-
 def mortgage_calculator
-  quit_input = ''
-  while quit_input != 'Q'
+  loop do
     prompt('welcome')
     monthly_rate = calculate_monthly_interest_rate
     duration_months = calculate_loan_duration_months
     amount = loan_amount_input
     payment = calculate_monthly_payment(amount, monthly_rate, duration_months)
     puts "Expected Monthly Payment is $#{payment.round(2)}"
-    quit_input = quit
+    prompt('quit')
+    break if gets.chomp.capitalize == 'Q'
   end
 end
 
