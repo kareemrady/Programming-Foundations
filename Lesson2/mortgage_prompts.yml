@@ -1,0 +1,9 @@
+# Messages for Mortgage Calculator
+
+welcome: "Welcome to My Mortgage Calculator"
+loan_amount: "Please type in your Total Loan Value in $: "
+APR: "Please type in the Annual Percentage Rate in % ex: 5 : "
+loan_duration: "Please type in Total duration of loan in years:  "
+not_a_number: "Error Value entered is not a valid number"
+quit: 'Please type "q" or "Q" to quit or any Key to Continue'
+goodbye: 'Thanks for using my mortgage calculator , GoodBye !!'
