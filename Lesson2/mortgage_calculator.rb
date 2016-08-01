@@ -6,8 +6,8 @@ def prompt(message)
   puts PROMPTS[message]
 end
 
-# Method To find if an input is a number or not
-def input_not_a_number?(number)
+# Method To find if an input is a valid number that is greater than 0
+def not_a_valid_number?(number)
   num_regex = /^[1-9]+/
   num_regex.match(number).nil?
 end
@@ -16,7 +16,7 @@ end
 def calculate_monthly_interest_rate
   prompt('APR')
   apr = gets.chomp
-  while input_not_a_number?(apr)
+  while not_a_valid_number?(apr)
     prompt('not_a_number')
     prompt('APR')
     apr = gets.chomp
@@ -28,7 +28,7 @@ end
 def calculate_loan_duration_months
   prompt('loan_duration')
   yearly_duration = gets.chomp
-  while input_not_a_number?(yearly_duration)
+  while not_a_valid_number?(yearly_duration)
     prompt('not_a_number')
     prompt('loan_duration')
     yearly_duration = gets.chomp
@@ -39,7 +39,7 @@ end
 def loan_amount_input
   prompt('loan_amount')
   loan = gets.chomp
-  while input_not_a_number?(loan)
+  while not_a_valid_number?(loan)
     prompt('not_a_number')
     prompt('loan_amount')
     loan = gets.chomp
