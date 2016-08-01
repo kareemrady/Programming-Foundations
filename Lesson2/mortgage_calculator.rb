@@ -8,7 +8,7 @@ end
 
 # Method To find if an input is a number or not
 def input_not_a_number?(number)
-  num_regex = /\d+$/
+  num_regex = /^[1-9]+/
   num_regex.match(number).nil?
 end
 
