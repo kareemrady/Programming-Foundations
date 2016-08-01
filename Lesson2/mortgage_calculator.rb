@@ -21,7 +21,7 @@ def calculate_monthly_interest_rate
     prompt('APR')
     apr = gets.chomp
   end
-  (apr.to_f / 12.0).round(2) / 100
+  (apr.to_f / 12.0) / 100
 end
 
 # Method to Calculate Loan Duration in Months
@@ -33,7 +33,7 @@ def calculate_loan_duration_months
     prompt('loan_duration')
     yearly_duration = gets.chomp
   end
-  (yearly_duration.to_f * 12.0).ceil
+  yearly_duration.to_f * 12.0
 end
 
 def loan_amount_input
