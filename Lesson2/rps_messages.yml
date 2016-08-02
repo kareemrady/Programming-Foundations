@@ -1,0 +1,7 @@
+welcome: 'Welcome to Rock Paper Scissors Game'
+user_selection: "Please Input your selection [p] for paper , [r] for rock or [s] for scissors"
+invalid_selection: "Invalid Selection valid choices are [p] for paper , [r] for rock or [s] for scissors "
+tie: "It's a Tie !!!"
+user_wins: "You Win !!"
+user_lost: "Sorry you lost , better luck next time"
+quit: "Please type 'q' or 'Q' to quit or any other key to continue"
