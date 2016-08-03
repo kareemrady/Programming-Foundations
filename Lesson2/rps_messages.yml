@@ -1,7 +1,9 @@
 welcome: 'Welcome to Rock Paper Scissors Game'
-user_selection: "Please Input your selection [p] for paper , [r] for rock or [s] for scissors"
-invalid_selection: "Invalid Selection valid choices are [p] for paper , [r] for rock or [s] for scissors "
+user_selection: "Please Input your selection [p] for paper , [r] for rock , [s] for scissors or spock, [l] for lizard"
+invalid_selection: "Invalid Selection valid choices are [p] for paper , [r] for rock or [s] for scissors or spock, [l] for lizard "
+invalid_selection_s: "Invalid Selection please type [1] for 'Scissors' or [2] for 'Spock' "
 tie: "It's a Tie !!!"
 user_wins: "You Win !!"
 user_lost: "Sorry you lost , better luck next time"
 quit: "Please type 'q' or 'Q' to quit or any other key to continue"
+scissors_or_spock: "Found 2 matches please type [1] for 'Scissors' or [2] for 'Spock'"
