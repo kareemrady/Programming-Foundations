@@ -68,7 +68,7 @@ end
 def find_winner(player_selection, computer_selection)
   flag = create_flag(player_selection, computer_selection)
   player_winning_options_arr = PLAYER_WINNING_OPTIONS.values.flatten(1)
-  if flag[:choices][0] == flag[:choices][1]
+  if flag[:choices].first == flag[:choices].last
     flag[:tie] = 1
   elsif player_winning_options_arr.include?(flag[:choices])
     flag[:player_win] = 1
@@ -81,10 +81,10 @@ end
 def display_winner(flag)
   if flag[:player_win] == 1
     prompt('user_wins')
-    puts "#{flag[:choices][0]} beats #{flag[:choices][1]}"
+    puts "#{flag[:choices].first} beats #{flag[:choices].last}"
   elsif flag[:computer_win] == 1
     prompt('user_lost')
-    puts "#{flag[:choices][1]} beats #{flag[:choices][0]}"
+    puts "#{flag[:choices].last} beats #{flag[:choices].first}"
   else
     prompt('tie')
   end
