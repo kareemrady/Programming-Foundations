@@ -22,8 +22,6 @@ WINNING_OPTIONS =
   %w(Paper Spock),
   %w(Spock Rock)
 
-PLAYER_WINNING_OPTIONS = { player_wins: WINNING_OPTIONS }
-
 def prompt(message)
   puts MESSAGES[message]
 end
@@ -56,7 +54,7 @@ def prompt_user_for_input
   USER_SELECTION_HASH[user_selection.to_sym]
 end
 
-def create_flag(player_selection, computer_selection)
+def create_win_hash(player_selection, computer_selection)
   {
     player_win: 0,
     computer_win: 0,
@@ -65,26 +63,27 @@ def create_flag(player_selection, computer_selection)
   }
 end
 
-def find_winner(player_selection, computer_selection)
-  flag = create_flag(player_selection, computer_selection)
-  player_winning_options_arr = PLAYER_WINNING_OPTIONS.values.flatten(1)
-  if flag[:choices].first == flag[:choices].last
-    flag[:tie] = 1
-  elsif player_winning_options_arr.include?(flag[:choices])
-    flag[:player_win] = 1
+def identify_winner(player_selection, computer_selection)
+  win_hash = create_win_hash(player_selection, computer_selection)
+  if win_hash[:choices].first == win_hash[:choices].last
+    win_hash[:tie] = 1
+  elsif WINNING_OPTIONS.include?(win_hash[:choices])
+    win_hash[:player_win] = 1
   else
-    flag[:computer_win] = 1
+    win_hash[:computer_win] = 1
   end
-  flag
+  win_hash
 end
 
-def display_winner(flag)
-  if flag[:player_win] == 1
+def display_winner(win_hash)
+  player_selection = win_hash[:choices].first
+  computer_selection = win_hash[:choices].last
+  if win_hash[:player_win] == 1
     prompt('user_wins')
-    puts "#{flag[:choices].first} beats #{flag[:choices].last}"
-  elsif flag[:computer_win] == 1
+    puts "#{player_selection} beats #{computer_selection}"
+  elsif win_hash[:computer_win] == 1
     prompt('user_lost')
-    puts "#{flag[:choices].last} beats #{flag[:choices].first}"
+    puts "#{computer_selection} beats #{player_selection}"
   else
     prompt('tie')
   end
@@ -93,7 +92,7 @@ end
 def play_game
   user_choice = prompt_user_for_input
   computer_choice = computer_selected_choice
-  winner = find_winner(user_choice, computer_choice)
+  winner = identify_winner(user_choice, computer_choice)
   display_winner(winner)
   winner
 end
