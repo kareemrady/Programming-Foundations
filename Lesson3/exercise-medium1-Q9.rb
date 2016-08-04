@@ -7,7 +7,7 @@ munsters = {
 }
 
 def find_age_group(age)
-  age_group = case age
+  case age
     when 0..17 then "kid"
     when 18..64 then "adult"
     else 
