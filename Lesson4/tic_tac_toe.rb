@@ -56,7 +56,7 @@ def display_selections(p_selections, c_selections, p_letter, c_letter)
   end
 end
 
-def draw_square(p_choices, c_choices)
+def draw_square_numbers(p_choices, c_choices)
   message = 'square'
   (1..9).each do |num|
     if p_choices.keys.include?(num) || c_choices.keys.include?(num)
@@ -78,7 +78,7 @@ def display_square_selections(options = {})
   else
     prompt "line"
     prompt "available_selections"
-    draw_square(p_choices, c_choices)
+    draw_square_numbers(p_choices, c_choices)
   end
 end
 
