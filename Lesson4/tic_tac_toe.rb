@@ -9,7 +9,7 @@ WINNING_KEYS = [
   [7, 8, 9], [1, 4, 7],
   [2, 5, 8], [3, 6, 9],
   [1, 5, 9], [3, 5, 7]
-] 
+].freeze
 
 def board_map_generator
   board_map = {}
@@ -56,25 +56,29 @@ def display_selections(p_selections, c_selections, p_letter, c_letter)
   end
 end
 
+def draw_square(p_choices, c_choices)
+  message = 'square'
+  (1..9).each do |num|
+    if p_choices.keys.include?(num) || c_choices.keys.include?(num)
+      square_na = message + "_NA"
+      print MESSAGES[square_na]
+    else
+      square_num = message + num.to_s
+      print MESSAGES[square_num]
+    end
+    print "|\n" if (num % 3).zero?
+  end
+end
+
 def display_square_selections(options = {})
   p_choices = options[:p_choices]
   c_choices = options[:c_choices]
-  message = 'square'
   if options.empty?
     display_square_board
   else
     prompt "line"
     prompt "available_selections"
-    (1..9).each do |num|
-      if p_choices.keys.include?(num) || c_choices.keys.include?(num)
-        square_na = message + "_NA"
-        print MESSAGES[square_na]
-      else
-        square_num = message + num.to_s
-        print MESSAGES[square_num]
-      end
-      print "|\n" if (num % 3).zero?
-    end
+    draw_square(p_choices, c_choices)
   end
 end
 
@@ -141,23 +145,28 @@ def delete_selection(board_hash, selection_hash)
   board_hash.delete_if { |k, _| k == selection_hash.keys[0] }
 end
 
-def player_turn(board_map, letter, p_choices)
+def player_turn(board_map, p_choices)
   p_selection = player_select_square(board_map)
   delete_selection(board_map, p_selection)
   p_choices.merge!(p_selection)
 end
 
-def computer_turn(board_map, letter, c_choices)
+def computer_turn(board_map, c_choices)
   c_selection = computer_select_square(board_map)
   delete_selection(board_map, c_selection)
   c_choices.merge!(c_selection)
 end
 
+def winning_choice_found?(selections)
+  selections_arr = selections.keys.sort.combination(3).to_a
+  selections_arr.any? { |a| WINNING_KEYS.include?(a) }
+end
+
 def winner_found?(p_selections, c_selections)
-  if WINNING_KEYS.flatten.include?(p_selections.keys)
+  if winning_choice_found?(p_selections)
     puts "Player Wins"
     return true
-  elsif WINNING_KEYS.flatten.include?(c_selections.keys)
+  elsif winning_choice_found?(c_selections)
     puts "Computer Wins"
     return true
   else
@@ -165,7 +174,22 @@ def winner_found?(p_selections, c_selections)
   end
 end
 
-def play_game
+def play_game(p_selections, c_selections, board_map, board_hash)
+  9.times do
+    player_turn(board_map, p_selections)
+    computer_turn(board_map, c_selections)
+    winner = winner_found?(p_selections, c_selections)
+    if board_map.empty? && !winner
+      puts "It's a tie"
+      break
+    elsif winner
+      break
+    end
+    display_current_board(board_hash)
+  end
+end
+
+def start_game
   prompt "welcome"
   p_selections = {}
   c_selections = {}
@@ -173,16 +197,10 @@ def play_game
   p_letter = choose_letter_player
   c_letter = choose_letter_computer(p_letter)
   display_current_board
-  9.times do
-    break if board_map.empty?
-    player_turn(board_map, p_letter, p_selections)
-    computer_turn(board_map, c_letter, c_selections)
-    board_hash = generate_hash(p_selections, c_selections, p_letter, c_letter)
-    winner = winner_found?(p_selections, c_selections)
-    break if winner
-    display_current_board(board_hash)
-  end
+  board_hash = generate_hash(p_selections, c_selections, p_letter, c_letter)
+  play_game(p_selections, c_selections, board_map, board_hash)
+  display_selections(p_selections, c_selections, p_letter, c_letter)
   puts "GoodBye!!"
 end
 
-play_game
+start_game
