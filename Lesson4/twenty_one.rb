@@ -62,11 +62,7 @@ end
 def calculate_non_ace_cards(cards)
   total_score = 0
   cards.each do |card|
-    if CARD_FACES.include?(card)
-      total_score += FACE_VALUE
-    else
-      total_score += card
-    end
+    total_score += CARD_FACES.include?(card) ? FACE_VALUE : card
   end
   total_score
 end
@@ -113,7 +109,7 @@ def deal_or_hold_dealer?(score)
     puts "\nDealer picks a card"
     return true
   end
-  puts "\n Dealer Stays"
+  puts "\n-------------Dealer Stays--------------\n"
   false
 end
 
@@ -129,7 +125,7 @@ def display_who_busted(p_score)
   if busted?(p_score)
     puts "Sorry you Busted!"
   else
-    puts "You Win , Dealer Busted"
+    puts "You Win , Dealer Busted !!"
   end
 end
 
@@ -142,17 +138,15 @@ def win_loss_message(p_score)
 end
 
 def play_twenty_one(deck, p_cards, d_cards, p_score, d_score)
-  loop do
+  while p_score < TWENTY_ONE && d_score < 21
     player_deal_response = deal_or_hold_player
     if player_deal_response == 'Y'
       player_turn(deck, p_cards)
       p_score = calculate_score(p_cards)
-      break if busted?(p_score) || twenty_one?(p_score)
     end
     dealer_turn(deck, d_cards) if deal_or_hold_dealer?(d_score)
     display_cards(d_cards, false, false)
     d_score = calculate_score(d_cards)
-    break if busted?(d_score) || twenty_one?(d_score)
   end
   { p_cards: p_cards, d_cards: d_cards, p_score: p_score, d_score: d_score }
 end
@@ -172,6 +166,8 @@ def display_final_result(game_hash)
   display_who_busted(p_score) if busted?(p_score) || busted?(d_score)
   win_loss_message(p_score) if twenty_one?(p_score) || twenty_one?(d_score)
   puts "Dealer Score is : #{d_score} & Player Score is : #{p_score}"
+  display_cards(game_hash[:p_cards])
+  display_cards(game_hash[:d_cards], false, true)
 end
 
 def play_game
@@ -182,8 +178,6 @@ def play_game
   game_play_hash = play_twenty_one(deck, player_hand,
                                    dealer_hand, player_score, dealer_score)
   display_final_result(game_play_hash)
-  display_cards(dealer_hand, false, true)
-  display_cards(player_hand)
 end
 
 play_game
