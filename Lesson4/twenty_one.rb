@@ -1,10 +1,12 @@
+require "pry"
+
 CARD_SUITS = [:Hearts, :Diamonds, :Clubs, :Spades].freeze
 CARD_VALUES = (1..10).to_a
 CARD_FACES = [:King, :Jack, :Queen].freeze
-ACE = 1
 TWENTY_ONE = 21
 FACE_VALUE = 10
 ACE_VALUE = 11
+DEALER_LIMIT = 17
 
 def create_deck_of_cards
   deck = CARD_VALUES.product(CARD_SUITS) + CARD_FACES.product(CARD_SUITS)
@@ -28,6 +30,18 @@ def describe_card(card)
     puts "Ace of #{card.last}"
   else
     puts "#{card.first} of #{card.last}"
+  end
+end
+
+def compare_hands(player_hand, dealer_hand)
+  player_score = calculate_score(player_hand)
+  dealer_score = calculate_score(dealer_hand)
+  if dealer_score < player_score
+    return "Player Wins !!!"
+  elsif dealer_score > player_score
+    return "Dealer Wins!!!"
+  else
+    return "It's a Tie"
   end
 end
 
@@ -56,7 +70,7 @@ def initial_deal(deck)
   puts "\n-------------Cards After First Deal------------------------\n"
   display_cards(player_hand)
   display_cards(dealer_hand, false, false)
-  return player_hand, dealer_hand
+  [player_hand, dealer_hand]
 end
 
 def calculate_non_ace_cards(cards)
@@ -93,32 +107,32 @@ def dealer_turn(deck, dealer_hand)
   display_cards(dealer_hand, false, false)
 end
 
-def deal_or_hold_player
-  puts "Please Type [Y] to deal card or [N] to hold"
+def deal_or_stay_player
+  puts "Please Type [Y] to deal card or [N] to stay"
   player_input = ''
   loop do
     player_input = gets.chomp.upcase
     break if ['Y', 'N'].include?(player_input)
-    puts "Invalid Input , Please Type [Y] to deal card or [N] to hold"
+    puts "Invalid Input , Please Type [Y] to deal card or [N] to stay"
   end
   player_input
 end
 
-def deal_or_hold_dealer?(score)
-  if score < 17
-    puts "\nDealer picks a card"
+def deal_or_stay_dealer?(score)
+  if score < DEALER_LIMIT
+    puts "\n=>Dealer Picks a Card\n"
     return true
   end
-  puts "\n-------------Dealer Stays--------------\n"
+  puts "\n=>Dealer Stays\n"
   false
 end
 
 def busted?(score)
-  score > 21
+  score > TWENTY_ONE
 end
 
 def twenty_one?(score)
-  score == 21
+  score == TWENTY_ONE
 end
 
 def display_who_busted(p_score)
@@ -130,23 +144,41 @@ def display_who_busted(p_score)
 end
 
 def win_loss_message(p_score)
-  if p_score == 21
+  if p_score == TWENTY_ONE
     puts "You Win !!"
   else
     puts "You lost better luck next time!"
   end
 end
 
-def play_twenty_one(deck, p_cards, d_cards, p_score, d_score)
-  while p_score < TWENTY_ONE && d_score < 21
-    player_deal_response = deal_or_hold_player
-    if player_deal_response == 'Y'
-      player_turn(deck, p_cards)
-      p_score = calculate_score(p_cards)
+def dealer_hits(deck, d_cards, p_cards, d_score)
+  loop do
+    if deal_or_stay_dealer?(d_score)
+      dealer_turn(deck, d_cards)
+      d_score = calculate_score(d_cards)
+      break if busted?(d_score) || twenty_one?(d_score)
+    else
+      puts "\n=>#{compare_hands(p_cards, d_cards)}\n"
+      break
     end
-    dealer_turn(deck, d_cards) if deal_or_hold_dealer?(d_score)
+  end
+  d_score
+end
+
+def play_twenty_one(deck, p_cards, d_cards, p_score, d_score)
+  player_response = deal_or_stay_player
+  while player_response == 'Y' && !twenty_one?(p_score)
+    puts "=>Player Picks a Card"
+    player_turn(deck, p_cards)
+    p_score = calculate_score(p_cards)
     display_cards(d_cards, false, false)
-    d_score = calculate_score(d_cards)
+    break if busted?(p_score) || twenty_one?(p_score)
+    puts "=>Player Score is now #{p_score}\n"
+    player_response = deal_or_stay_player
+  end
+  if player_response == 'N'
+    puts "\n=>Player Stays at #{p_score}\n"
+    d_score = dealer_hits(deck, d_cards, p_cards, d_score)
   end
   { p_cards: p_cards, d_cards: d_cards, p_score: p_score, d_score: d_score }
 end
@@ -161,6 +193,8 @@ end
 
 def display_final_result(game_hash)
   puts "\n-------------------Final Result-----------------------------------\n"
+  compare_cards_message = game_hash[:message]
+  compare_cards_message unless compare_cards_message
   p_score = find_player_score(game_hash)
   d_score = find_dealer_score(game_hash)
   display_who_busted(p_score) if busted?(p_score) || busted?(d_score)
@@ -171,6 +205,7 @@ def display_final_result(game_hash)
 end
 
 def play_game
+  system 'clear'
   deck = create_deck_of_cards
   player_hand, dealer_hand = initial_deal(deck)
   player_score = calculate_score(player_hand)
